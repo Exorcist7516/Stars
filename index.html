@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skyrim Quest</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- AUDIO ELEMENTS -->
+    <!-- Замените src на ваши файлы -->
+    <audio id="bg-music">
+        <source src="assets/audio/secunda.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-quest">
+        <source src="assets/audio/quest_update.mp3" type="audio/mpeg">
+    </audio>
+    <!-- New Audio Elements -->
+    <audio id="sfx-paper">
+        <source src="assets/audio/paper_open.wav" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-levelup">
+        <source src="assets/audio/levelup.mp3" type="audio/mpeg">
+    </audio>
+
+
+    <!-- START SCREEN -->
+    <div id="start-screen">
+        <div id="start-text">Hey you. You're finally awake.</div>
+    </div>
+
+    <!-- MAIN SCENE -->
+    <div id="main-scene">
+        <div id="easter-egg">Сучка</div>
+        <canvas id="snow"></canvas>
+        <div id="fog-layer"></div>
+        <div id="stars-container"></div>
+
+        <!-- QUEST NOTIFICATION -->
+        <div id="quest-notification">
+            <div class="quest-title">НОВОЕ ЗАДАНИЕ</div>
+            <div class="quest-desc">Прочесть Древний Свиток</div>
+        </div>
+
+        <!-- QUEST MARKER -->
+        <div id="quest-marker-container">
+            <div id="quest-marker"></div>
+            <div id="interaction-text">Открыть</div>
+        </div>
+
+    </div>
+
+    <div id="audio-controls-ui">
+        <select id="music-selector" title="Select Music"></select>
+        <button id="audio-toggle" title="Play/Pause">||</button> <!-- Start with pause symbol as it autoplayed -->
+        <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
+    </div>
+
+    <!-- MODAL (SCROLL) -->
+    <div id="modal-overlay">
+        <div id="scroll-content">
+            <div class="scroll-text">
+                <p style="font-weight: bold; font-size: 1.2em; text-align: center; margin-bottom: 20px;">Моя дорогая
+                    пушистая странница, Рейн</p>
+
+                <p>Когда звезды занимают свои места на небосводе, возвещая о смене циклов, я сижу здесь и перебираю в
+                    памяти сокровища прошедшего года. Не золото и не древние реликвии, нет. Я думаю о том тепле, которым
+                    ты щедро делилась со мной, когда ветра судьбы были холодны.</p>
+
+                <p>Ты была моей опорой, моим маяком в чернильной тьме Неизведанного. Ты спасаешь мою душу неисчислимое
+                    количество раз. Больше чем звёзд. Которые ты мне тоже подарила, к слову)</p>
+
+                <p>Благодарю тебя за каждое мгновение, что ты дарила мне, не требуя ничего взамен. За наши поездки с
+                    сеном на крыше. За жуткие охоты на призрачных бедолаг. За ночные прогулки с факелом в лапах. За
+                    записи книг, что я теперь могу слушать и за колыбельную. За хорошего мальчика. За наряды от лучшей
+                    плетуньи. За... уже устала читать, когтистая подруга?) </p>
+
+                <p>За твои рисунки, в которых живет магия, более чистая, чем любая,
+                    что я видел в планах Обливиона. За бант, способный наполнить радостью сердце за один вдох. </p>
+
+                <p>Ты одарила меня сокровищами, ценность которых не измерить ни одной монетой или гримуаром Тамриэля.
+                </p>
+
+                <p>Но главное чудо случилось в этом обороте колеса — мы встретились. И поверь слову старого арканиста:
+                    нет ноши приятнее и легче, чем держать тебя на руках. Ты — самое мягкое и драгоценное создание,
+                    ступавшее по земле.</p>
+
+                <p>Я люблю тебя, Рейн. Искренне, как любят истину искатели знаний. Пусть Новый Год принесет нам лишь
+                    больше света Лун. Я желаю, чтобы наши тропы сплелись ещё крепче, подобно изящной вязи узлов, и
+                    счастье наше сияло ярче, чем Глаз Магнуса.</p>
+
+                <p class="signature">С Новым Годом, Domina. Рысь. Моя Луна.</p>
+                <p class="signature">Ai Shiteiru<br>Твой верный Шевалье <3 </p>
+            </div>
+
+            <div class="scroll-footer">
+                <div class="key-hint">
+                    <span class="key-icon">Tab</span>
+                    <button class="close-btn" id="close-btn-ui">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STAR MODAL -->
+    <div id="star-modal-overlay">
+        <div class="star-modal-content">
+            <div id="star-modal-body">
+                <p id="star-modal-text"></p>
+                <div id="star-modal-link-container"></div>
+            </div>
+            <div class="star-modal-controls">
+                <button id="star-modal-close">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PASSWORD MODAL -->
+    <div id="password-modal">
+        <div class="password-box">
+            <h2 class="password-title">Тайные слова</h2>
+            <input type="text" id="password-input" placeholder="..." autocomplete="off">
+            <button id="password-submit">Шурх</button>
+            <button id="password-cancel">Не Шурх</button>
+            <div id="password-error">Ауч. Забыла?)</div>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>
