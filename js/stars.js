@@ -130,8 +130,12 @@ function openStarMessage(starData) {
         }
     }
 
-    // Set Text
-    starModalText.textContent = starData.message;
+    // Set Text or Image
+    if (starData.image) {
+        starModalText.innerHTML = `<img src="${starData.image}" alt="" class="star-modal-image" />`;
+    } else {
+        starModalText.textContent = starData.message;
+    }
 
     // Handle Link
     starModalLinkContainer.innerHTML = ''; // Safe because we control the link content

@@ -695,7 +695,7 @@ html {
     border: 1px solid #7ea6e0;
     /* A bit more starry/magic color */
     padding: 30px;
-    max-width: 400px;
+    max-width: 2000px;
     text-align: center;
     color: #e0e0ff;
     font-family: 'Futura Condensed', sans-serif;
@@ -705,6 +705,13 @@ html {
 
 #star-modal-text {
     margin-bottom: 20px;
+}
+
+.star-modal-image {
+    max-width: 100%;
+    max-height: 60vh;
+    border-radius: 5px;
+    margin-bottom: 10px;
 }
 
 #star-modal-close {

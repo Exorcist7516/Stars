@@ -569,7 +569,7 @@ export const STARS_CONFIG = [
         id: 'star-81',
         x: '29.17%',
         y: '64.81%',
-        message: 'Твои движения в игре и жизни иногда такие резкие и точные, будто ты готовишься к прыжку.'
+        image: 'assets/img/solstice.jpg'
     },
     {
         id: 'star-82',
@@ -749,13 +749,13 @@ export const STARS_CONFIG = [
         id: 'star-111',
         x: '67.45%',
         y: '54.81%',
-        message: 'Ты вдохновляешь меня быть лучше. Каждый день.'
+        image: 'assets/img/solstice_2.jpg'
     },
     {
         id: 'star-112',
         x: '66.47%',
         y: '58.81%',
-        message: 'Звук твоего стилуса по планшету — лучший ASMR, который я слышал.'
+        image: 'assets/img/solstice_3.jpg'
     },
     {
         id: 'star-113',
