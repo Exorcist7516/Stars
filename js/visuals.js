@@ -9,7 +9,7 @@ const maxSnowflakes = 60;
 
 let comets = [];
 
-export function initSnow(canvasId, isStartedCallback) {
+export function initSnow(canvasId, isStartedCallback, onCometClick) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
 
@@ -134,6 +134,28 @@ export function initSnow(canvasId, isStartedCallback) {
         height = window.innerHeight;
         canvas.width = width;
         canvas.height = height;
+    });
+
+    canvas.addEventListener('click', (e) => {
+        if (!isStartedCallback()) return;
+
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Detect click on comet head
+        const clickRadius = 30;
+
+        for (let i = 0; i < comets.length; i++) {
+            const comet = comets[i];
+            const dist = Math.sqrt((x - comet.x) ** 2 + (y - comet.y) ** 2);
+
+            if (dist < clickRadius) {
+                comet.active = false; // Remove comet
+                if (onCometClick) onCometClick();
+                break; // Only catch one at a time
+            }
+        }
     });
 
     updateAndDraw();

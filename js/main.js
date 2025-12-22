@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const bgMusic = document.getElementById('bg-music');
     const sfxQuest = document.getElementById('sfx-quest');
     const sfxLevelUp = document.getElementById('sfx-levelup');
+    const sfxComet = document.getElementById('sfx-comet');
 
     // UI Elements
     const questNotification = document.getElementById('quest-notification');
@@ -34,14 +35,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordCancel = document.getElementById('password-cancel');
     const passwordError = document.getElementById('password-error');
 
+    // Comet Modal Elements
+    const cometModal = document.getElementById('comet-modal-overlay');
+    const cometModalClose = document.getElementById('comet-modal-close');
+    const cometModalLinkContainer = document.getElementById('comet-modal-link-container');
+
     // --- State ---
     let isStarted = false;
     let isModalOpen = false;
     let isPasswordCorrect = false;
     let hasTriggeredLevelUp = false;
+    let hasPlayedVoiceMessage = false;
 
     // --- Initialize Modules ---
-    initSnow('snow', () => isStarted);
+    initSnow('snow', () => isStarted, openCometModal);
     initAudio(bgMusic, audioToggle, volumeSlider, musicSelector);
     initStars('stars-container');
 
@@ -100,9 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Play Quest Update Sound after a short delay
         setTimeout(() => {
-            showNotification("НОВОЕ ЗАДАНИЕ", "Прочесть Древний Свиток", sfxQuest);
+            showNotification("ЗАДАНИЕ НАЧАТО", "Раскрыть тайны Древнего Свитка", sfxQuest);
         }, 1000);
     }
+
 
     // Listen for any key or click to start
     document.addEventListener('keydown', (e) => {
@@ -143,6 +151,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         modalOverlay.classList.add('open');
 
+        // Duck background music while scroll is open
+        duckVolume();
+
         // Play paper sound if available
         const sfxPaper = document.getElementById('sfx-paper');
         if (sfxPaper) {
@@ -150,10 +161,21 @@ document.addEventListener('DOMContentLoaded', () => {
             sfxPaper.currentTime = 0;
             sfxPaper.play().catch(e => console.warn("Paper SFX failed:", e));
         }
+
+        // Play voice message only on first open
+        if (!hasPlayedVoiceMessage) {
+            const sfxScrollVoice = document.getElementById('sfx-scroll-voice');
+            if (sfxScrollVoice) {
+                sfxScrollVoice.volume = 0.9;
+                sfxScrollVoice.currentTime = 0;
+                sfxScrollVoice.play().catch(e => console.warn("Scroll voice failed:", e));
+                hasPlayedVoiceMessage = true;
+            }
+        }
     }
 
     function closeScroll() {
-        if (!isModalOpen) return;
+        if (!isModalOpen || (!modalOverlay.classList.contains('open') && !passwordModal.classList.contains('open'))) return;
 
         // Check if we are closing the scroll itself
         const wasScrollVisible = modalOverlay.classList.contains('open');
@@ -162,12 +184,22 @@ document.addEventListener('DOMContentLoaded', () => {
         modalOverlay.classList.remove('open');
         passwordModal.classList.remove('open');
 
+        // Stop voice message and restore volume when scroll closes
+        if (wasScrollVisible) {
+            const sfxScrollVoice = document.getElementById('sfx-scroll-voice');
+            if (sfxScrollVoice) {
+                sfxScrollVoice.pause();
+                sfxScrollVoice.currentTime = 0;
+            }
+            unduckVolume();
+        }
+
         // Trigger Level Up once after first scroll closure
         if (wasScrollVisible && !hasTriggeredLevelUp) {
             hasTriggeredLevelUp = true;
             setTimeout(() => {
                 duckVolume();
-                showNotification("ЗАДАНИЕ ЗАВЕРШЕНО", "Ты самая хитрая, Юна-тан.", sfxLevelUp, 20000, 0.3); // Quieter level up (0.3)
+                showNotification("ЗАДАНИЕ ВЫПОЛНЕНО", "Ты самая хитрая, Юна-тан.", sfxLevelUp, 20000, 0.3); // Quieter level up (0.3)
 
                 // Unduck when sound ends
                 if (sfxLevelUp) {
@@ -182,7 +214,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // 3. Comet Reward Modal
+    function openCometModal() {
+        if (!cometModal) return;
+
+        isModalOpen = true;
+        cometModal.classList.add('open');
+
+        // Always duck volume when comet modal opens
+        duckVolume();
+
+        // Play comet catch sound
+        if (sfxComet) {
+            sfxComet.volume = 1.0;
+            sfxComet.currentTime = 0;
+            sfxComet.play().catch(e => console.warn("Comet SFX failed:", e));
+        }
+    }
+
+    function closeCometModal() {
+        if (!cometModal || !cometModal.classList.contains('open')) return;
+
+        isModalOpen = false;
+        cometModal.classList.remove('open');
+        unduckVolume();
+
+        if (sfxComet) {
+            sfxComet.pause();
+            sfxComet.currentTime = 0;
+        }
+    }
+
+    if (cometModalClose) {
+        cometModalClose.addEventListener('click', () => {
+            const giftLink = "https://youtu.be/IaskxKfeFno?si=WG0V11kzpAiYhi7X";
+            window.open(giftLink, '_blank');
+            closeCometModal();
+        });
+    }
+
+    // Note: Comet modal only closes via button click, not by clicking outside
+
     questMarkerContainer.addEventListener('click', openScroll);
+
+    // Click outside to close scroll
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) closeScroll();
+    });
 
     // Password Listeners
     passwordSubmit.addEventListener('click', checkPassword);
@@ -206,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
             openScroll();
         }
 
-        // 'Tab' or 'Escape' to close
+        // 'Tab' or 'Escape' to close scroll (not comet modal)
         if ((e.key === 'Tab' || e.key === 'Escape') && isModalOpen) {
             e.preventDefault(); // Prevent default Tab focus switch
             closeScroll();

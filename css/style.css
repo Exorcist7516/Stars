@@ -136,7 +136,16 @@ html {
     height: 100%;
     z-index: 10;
     pointer-events: none;
-    /* Reverted to none as requested */
+}
+
+#snow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: auto;
 }
 
 /* 
@@ -425,6 +434,7 @@ html {
 }
 
 #volume-slider {
+    appearance: none;
     -webkit-appearance: none;
     width: 100px;
     height: 2px;
@@ -611,31 +621,51 @@ html {
 
 .star-marker::before {
     content: '';
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 70%);
     border-radius: 50%;
     animation: starPulse 2.5s infinite ease-in-out;
-    opacity: 0.4;
-    transition: transform 0.2s, opacity 0.2s;
+    opacity: 0;
+    /* Fully transparent by default */
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Smoother transition */
+}
+
+.star-marker:hover {
+    z-index: 1000;
 }
 
 .star-marker:hover::before {
-    transform: scale(1.4);
-    background: radial-gradient(circle, rgba(255, 255, 200, 1) 0%, rgba(255, 255, 200, 0) 70%);
-    opacity: 0.9;
+    transform: scale(5);
+    /* Balanced scale */
+    background: radial-gradient(circle,
+            rgba(255, 255, 255, 1) 0%,
+            rgba(200, 220, 255, 0.8) 25%,
+            rgba(0, 198, 255, 0.5) 50%,
+            rgba(0, 114, 255, 0.1) 85%,
+            transparent 100%);
+    opacity: 1;
+    box-shadow:
+        0 0 20px 2px #fff,
+        0 0 40px 5px #00c6ff,
+        0 0 60px 10px rgba(0, 198, 255, 0.6),
+        0 0 90px 20px rgba(0, 198, 255, 0.3);
+    filter: brightness(1.3) contrast(1.1);
+    /* Slightly toned down brightness */
 }
 
 @keyframes starPulse {
 
     0%,
     100% {
-        opacity: 0.2;
+        opacity: 0.3;
         transform: scale(1);
     }
 
     50% {
-        opacity: 0.6;
+        opacity: 0.7;
         transform: scale(1.1);
     }
 }
@@ -715,4 +745,389 @@ html {
     background: #7ea6e0;
     color: #000;
     box-shadow: 0 0 10px #7ea6e0;
+}
+
+/* 
+   ==========================================================================
+   COMET MODAL (COSMIC REWARD)
+   ==========================================================================
+*/
+#comet-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(10, 5, 20, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 400;
+    /* Higher than star modal */
+    opacity: 0;
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(8px);
+}
+
+#comet-modal-overlay.open {
+    display: flex;
+    opacity: 1;
+}
+
+.comet-modal-content {
+    background: linear-gradient(135deg, rgba(30, 10, 50, 0.95) 0%, rgba(10, 5, 25, 0.98) 100%);
+    border: 2px solid transparent;
+    border-image: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff) 1;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    color: #fff;
+    font-family: 'Futura Condensed', sans-serif;
+    position: relative;
+    box-shadow: 0 0 30px rgba(255, 0, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.1);
+    transform: scale(0.5) rotate(-10deg);
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+}
+
+#comet-modal-overlay.open .comet-modal-content {
+    transform: scale(1) rotate(0deg);
+    animation: cosmic-glow 3s infinite alternate;
+}
+
+@keyframes cosmic-glow {
+    0% {
+        box-shadow: 0 0 20px rgba(255, 0, 255, 0.2), 0 0 40px rgba(0, 255, 255, 0.1);
+    }
+
+    100% {
+        box-shadow: 0 0 40px rgba(255, 0, 255, 0.5), 0 0 80px rgba(0, 255, 255, 0.3);
+    }
+}
+
+.comet-modal-header {
+    margin-bottom: 25px;
+}
+
+.comet-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 10px #ff00ff);
+    animation: float 2s infinite ease-in-out;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.comet-title {
+    font-family: 'Kingthings Petrock', serif;
+    font-size: 2.2rem;
+    background: linear-gradient(to right, #ff00ff, #00ffff);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+}
+
+#comet-modal-body {
+    font-size: 1.5rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    color: #e0e0ff;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.comet-modal-controls {
+    margin-top: 20px;
+}
+
+#comet-modal-close {
+    background: linear-gradient(45deg, #ff00ff, #00ffff);
+    border: none;
+    color: #fff;
+    padding: 12px 30px;
+    cursor: pointer;
+    font-family: 'Futura Condensed', sans-serif;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    border-radius: 5px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+#comet-modal-close:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(255, 0, 255, 0.8);
+    filter: brightness(1.2);
+}
+
+.comet-btn {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #00ffff;
+    color: #00ffff;
+    padding: 10px 25px;
+    cursor: pointer;
+    font-family: 'Futura Condensed', sans-serif;
+    font-size: 1.3rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    margin-top: 15px;
+}
+
+.comet-btn:hover {
+    background: #00ffff;
+    color: #000;
+    box-shadow: 0 0 20px #00ffff;
+}
+
+/* 
+   ==========================================================================
+   SECRETS COUNTER & WARNING MODAL
+   ==========================================================================
+*/
+.cursor-counter {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    color: #fff;
+    font-family: 'Kingthings Petrock', serif;
+    font-size: 1.4rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 2px 2px 4px rgba(0, 0, 0, 1);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    white-space: nowrap;
+    transform: translate(15px, 15px);
+    /* Offset from cursor */
+}
+
+#warning-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(5px);
+}
+
+#warning-modal-overlay.open {
+    display: flex;
+}
+
+.warning-modal-content {
+    background: rgba(20, 20, 20, 0.95);
+    border: 2px solid #fff;
+    padding: 40px;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    animation: modal-appear 0.4s ease-out;
+}
+
+@keyframes modal-appear {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.warning-modal-content p {
+    font-family: 'Kingthings Petrock', serif;
+    font-size: 1.6rem;
+    color: #fff;
+    line-height: 1.4;
+    margin-bottom: 30px;
+}
+
+#warning-modal-close {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #fff;
+    color: #fff;
+    padding: 10px 30px;
+    font-family: 'Futura Condensed', sans-serif;
+    font-size: 1.3rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+#warning-modal-close:hover {
+    background: #fff;
+    color: #000;
+}
+
+#intervention-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10001;
+    backdrop-filter: blur(10px) grayscale(100%);
+    transition: background 1s ease;
+}
+
+#intervention-modal-overlay.open {
+    display: flex;
+}
+
+/* DIVINE MODE (Steps 1 & 2) */
+.intervention-modal-content.divine-mode {
+    background: rgba(30, 25, 0, 0.95);
+    border: 1px solid #ffd700;
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.4), inset 0 0 30px rgba(255, 215, 0, 0.2);
+}
+
+.intervention-modal-content.divine-mode p {
+    color: #fff9d0;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+}
+
+.intervention-modal-content.divine-mode #intervention-modal-next {
+    border-color: #ffd700;
+    color: #ffd700;
+}
+
+.intervention-modal-content.divine-mode #intervention-modal-next:hover {
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+    color: #fff;
+    border-color: #fff;
+}
+
+.intervention-modal-content.divine-mode::before {
+    background: linear-gradient(90deg, transparent, #ffd700, transparent) !important;
+}
+
+/* VOID MODE (Step 3) */
+.intervention-modal-content.void-mode {
+    background: rgba(10, 0, 20, 0.95);
+    border: 1px solid #a000ff;
+    box-shadow: 0 0 40px rgba(160, 0, 255, 0.3), inset 0 0 20px rgba(160, 0, 255, 0.2);
+}
+
+/* BLACK THREADS EFFECT */
+.black-threads-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.6;
+    z-index: 1;
+}
+
+.thread {
+    position: absolute;
+    background: #000;
+    width: 1.5px;
+    height: 120%;
+    opacity: 0.9;
+    filter: blur(0.5px);
+    animation: thread-wiggle 4s infinite ease-in-out;
+}
+
+@keyframes thread-wiggle {
+
+    0%,
+    100% {
+        transform: translateY(-10%) rotate(0deg) translateX(0);
+    }
+
+    50% {
+        transform: translateY(-10%) rotate(1deg) translateX(10px);
+    }
+}
+
+.intervention-modal-content {
+    padding: 50px;
+    max-width: 600px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s ease;
+}
+
+.intervention-modal-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #a000ff, transparent);
+    animation: glitch-line 4s infinite linear;
+    z-index: 2;
+}
+
+@keyframes glitch-line {
+    0% {
+        transform: translateY(-100%);
+    }
+
+    100% {
+        transform: translateY(600px);
+    }
+}
+
+.intervention-modal-content p {
+    font-family: 'Kingthings Petrock', serif;
+    font-size: 1.8rem;
+    color: #e0d0ff;
+    line-height: 1.5;
+    margin-bottom: 40px;
+    text-shadow: 0 0 10px rgba(160, 0, 255, 0.5);
+    position: relative;
+    z-index: 3;
+}
+
+#intervention-modal-next {
+    background: transparent;
+    border: 1px solid #a000ff;
+    color: #a000ff;
+    padding: 10px 40px;
+    font-family: 'Futura Condensed', sans-serif;
+    font-size: 1.4rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.4s;
+    letter-spacing: 2px;
+    position: relative;
+    z-index: 3;
+}
+
+#intervention-modal-next:hover {
+    background: rgba(160, 0, 255, 0.1);
+    box-shadow: 0 0 20px rgba(160, 0, 255, 0.4);
+    color: #fff;
+    border-color: #fff;
 }

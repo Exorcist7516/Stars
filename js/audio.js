@@ -110,12 +110,30 @@ export function startAudioSystem() {
     });
 }
 
+let wasPlayingBeforeIntervention = false;
+
+export function pauseBackgroundMusic() {
+    if (!bgMusic) return;
+    wasPlayingBeforeIntervention = !bgMusic.paused;
+    if (wasPlayingBeforeIntervention) {
+        bgMusic.pause();
+        if (audioToggle) audioToggle.innerHTML = "&#9658;";
+    }
+}
+
+export function resumeBackgroundMusic() {
+    if (!bgMusic || !wasPlayingBeforeIntervention) return;
+    bgMusic.play().then(() => {
+        if (audioToggle) audioToggle.innerHTML = "||";
+    }).catch(e => console.warn("Resume music failed:", e));
+}
+
 /**
  * Lowers background music volume for ducking (e.g., when SFX/Star audio plays)
  */
 export function duckVolume() {
     if (!bgMusic) return;
-    bgMusic.volume = volumeSlider.value * 0.2;
+    bgMusic.volume = volumeSlider.value * 0.05;
 }
 
 /**
@@ -125,3 +143,4 @@ export function unduckVolume() {
     if (!bgMusic) return;
     bgMusic.volume = volumeSlider.value;
 }
+

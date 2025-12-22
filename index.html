@@ -25,6 +25,12 @@
     <audio id="sfx-levelup">
         <source src="assets/audio/levelup.mp3" type="audio/mpeg">
     </audio>
+    <audio id="sfx-comet">
+        <source src="assets/audio/comet.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="sfx-scroll-voice">
+        <source src="assets/audio/scroll.mp3" type="audio/mpeg">
+    </audio>
 
 
     <!-- START SCREEN -->
@@ -36,13 +42,12 @@
     <div id="main-scene">
         <div id="easter-egg">Сучка</div>
         <canvas id="snow"></canvas>
-        <div id="fog-layer"></div>
         <div id="stars-container"></div>
 
         <!-- QUEST NOTIFICATION -->
         <div id="quest-notification">
-            <div class="quest-title">НОВОЕ ЗАДАНИЕ</div>
-            <div class="quest-desc">Прочесть Древний Свиток</div>
+            <div class="quest-title">ЗАДАНИЕ НАЧАТО</div>
+            <div class="quest-desc">Раскрыть тайны Древнего Свитка</div>
         </div>
 
         <!-- QUEST MARKER -->
@@ -71,12 +76,13 @@
                     ты щедро делилась со мной, когда ветра судьбы были холодны.</p>
 
                 <p>Ты была моей опорой, моим маяком в чернильной тьме Неизведанного. Ты спасаешь мою душу неисчислимое
-                    количество раз. Больше чем звёзд. Которые ты мне тоже подарила, к слову)</p>
+                    количество раз. Больше чем звёзд. Которые ты мне тоже подарила, к слову. </p>
 
                 <p>Благодарю тебя за каждое мгновение, что ты дарила мне, не требуя ничего взамен. За наши поездки с
                     сеном на крыше. За жуткие охоты на призрачных бедолаг. За ночные прогулки с факелом в лапах. За
                     записи книг, что я теперь могу слушать и за колыбельную. За хорошего мальчика. За наряды от лучшей
-                    плетуньи. За... уже устала читать, когтистая подруга?) </p>
+                    плетуньи. За... уже устала читать, когтистая подруга? Уж извини, я хочу подарить тебе свой взгляд —
+                    показать, какое чудо я вижу каждый день) </p>
 
                 <p>За твои рисунки, в которых живет магия, более чистая, чем любая,
                     что я видел в планах Обливиона. За бант, способный наполнить радостью сердце за один вдох. </p>
@@ -88,12 +94,17 @@
                     нет ноши приятнее и легче, чем держать тебя на руках. Ты — самое мягкое и драгоценное создание,
                     ступавшее по земле.</p>
 
-                <p>Я люблю тебя, Рейн. Искренне, как любят истину искатели знаний. Пусть Новый Год принесет нам лишь
-                    больше света Лун. Я желаю, чтобы наши тропы сплелись ещё крепче, подобно изящной вязи узлов, и
-                    счастье наше сияло ярче, чем Глаз Магнуса.</p>
+                <p>Я люблю тебя, Рейн. Искренне, как любят истину искатели знаний. Пусть Новый Год принесет тебе лишь
+                    больше света Лун. Больше приключений. Больше звона бубенчиков. Меньше тупых людей и очищений по два
+                    раза подряд, и конечно
+                    больше поводов сказать: "Я довольна".
+
+                <p>Я желаю, чтобы наши тропы сплелись ещё крепче, подобно изящной вязи узлов, и счастье наше сияло
+                    ярче, чем Глаз Магнуса.</p>
+                </p>
 
                 <p class="signature">С Новым Годом, Domina. Рысь. Моя Луна.</p>
-                <p class="signature">Ai Shiteiru<br>Твой верный Шевалье <3 </p>
+                <p class="signature">Ai Shiteiru<br>Твой верный Chevalier <3 </p>
             </div>
 
             <div class="scroll-footer">
@@ -104,6 +115,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- STAR MODAL -->
     <div id="star-modal-overlay">
@@ -118,7 +130,48 @@
         </div>
     </div>
 
+    <!-- COMET MODAL (REWARD) -->
+    <div id="comet-modal-overlay">
+        <div class="comet-modal-content">
+            <div class="comet-modal-header">
+                <div class="comet-icon">☄️</div>
+                <h2 class="comet-title">АГА!</h2>
+            </div>
+            <div id="comet-modal-body">
+                <p id="comet-modal-text">Ты поймала падающую звезду! Наверняка уже не первую. Я не сомневался в тебе,
+                    Хранительница Звёзд.<br><br>Забирай заслуженную награду)
+                </p>
+                <div id="comet-modal-link-container"></div>
+            </div>
+            <div class="comet-modal-controls">
+                <button id="comet-modal-close">Собрать звёздную пыль</button>
+            </div>
+        </div>
+    </div>
+
     <!-- PASSWORD MODAL -->
+    <div id="warning-modal-overlay" class="modal-overlay">
+        <div class="warning-modal-content">
+            <p>Следующее касание станет последним. И придётся разгадать загадку с уже собранными знаниями. Выбирай
+                внимательно.</p>
+            <div class="comet-modal-controls">
+                <button id="warning-modal-close">Буду внимательна</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="intervention-modal-overlay" class="modal-overlay">
+        <div class="intervention-modal-content">
+            <p id="intervention-text-content"></p>
+            <div class="comet-modal-controls">
+                <button id="intervention-modal-next"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOATING COUNTER -->
+    <div id="cursor-counter" class="cursor-counter"></div>
+
     <div id="password-modal">
         <div class="password-box">
             <h2 class="password-title">Тайные слова</h2>
